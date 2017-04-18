@@ -1,4 +1,5 @@
-# Udacity DataNana P3: Wrangling OpenStreetMap Data with SQL
+# Udacity DataNana P3 
+# Wrangling OpenStreetMap Data with SQL
 
 * **sample.py**       : create a sample osm with size less than 10 MB.
 * **iter_parsing.py** : parse osm file, extract and count top-level element types
