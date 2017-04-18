@@ -3,7 +3,7 @@
 # Output: return a list of unique users IDs ("uid")
 
 
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 import pprint
 import re
 
@@ -19,3 +19,14 @@ def process_map(filename):
         pass
 
     return users
+
+def test():
+
+    users = process_map('example.osm')
+    pprint.pprint(users)
+    assert len(users) == 6
+
+
+
+if __name__ == "__main__":
+    test()
