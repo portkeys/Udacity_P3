@@ -161,15 +161,18 @@ import re
 import xml.etree.ElementTree as ET
 
 import cerberus
-
 import schema
 
-OSM_PATH = "example.xml"
+import unicodedata
+
+import clean
+
+OSM_PATH = "hong_kong.osm"
 
 NODES_PATH = "nodes.csv"
 NODE_TAGS_PATH = "nodes_tags.csv"
 WAYS_PATH = "ways.csv"
-WAY_NODES_PATH = "way_nodes.csv"
+WAY_NODES_PATH = "ways_nodes.csv"
 WAY_TAGS_PATH = "ways_tags.csv"
 
 
@@ -199,6 +202,8 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
             node_attribs[field] = element.attrib[field]
         for child in element.iter('tag'):
             tag_dict = {}
+            tag_dict['id'] = element.attrib['id']
+
             keystring = child.attrib['k']
             if PROBLEMCHARS.search(keystring):
                 continue
@@ -211,8 +216,17 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
                 else:
                     tag_dict['type'] = 'regular'
                     tag_dict['key'] = keystring
-                tag_dict['id'] = element.attrib['id']
-                tag_dict['value'] = child.attrib['v']
+            
+            # Update cityname, phone and street    
+            if child.attrib['k'] == 'addr:city' or child.attrib['k'] == 'cityname':             
+              tag_dict['value'] = clean.update_cityname(child.attrib['v'])
+            elif child.attrib['k'] == 'phone':
+              tag_dict['value'] = clean.update_phone(child.attrib['v'])
+            elif child.attrib['k'] == 'addr:street':
+              tag_dict['value'] = clean.update_street(child.attrib['v'])
+            else:
+              tag_dict['value'] = child.attrib['v']
+
             tags.append(tag_dict)
         return {'node': node_attribs, 'node_tags': tags}
 
@@ -222,6 +236,7 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
             way_attribs[field] = element.attrib[field]
         for child in element.iter('tag'):
             tag_dict = {}
+            tag_dict['id'] = element.attrib['id']
             keystring = child.attrib['k']
             if PROBLEMCHARS.search(keystring):
                 continue
@@ -234,9 +249,19 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
                 else:
                     tag_dict['type'] = 'regular'
                     tag_dict['key'] = keystring
-                tag_dict['id'] = element.attrib['id']
-                tag_dict['value'] = child.attrib['v']
+              
+              # Update cityname, phone and street    
+            if child.attrib['k'] == 'addr:city' or child.attrib['k'] == 'cityname':             
+              tag_dict['value'] = clean.update_cityname(child.attrib['v'])
+            elif child.attrib['k'] == 'phone':
+              tag_dict['value'] = clean.update_phone(child.attrib['v'])
+            elif child.attrib['k'] == 'addr:street':
+              tag_dict['value'] = clean.update_street(child.attrib['v'])
+            else:  
+              tag_dict['value'] = child.attrib['v']
+            
             tags.append(tag_dict)
+
         count = 0
         for nd in element.iter('nd'):
             n_dict = {}
@@ -277,7 +302,7 @@ class UnicodeDictWriter(csv.DictWriter, object):
 
     def writerow(self, row):
         super(UnicodeDictWriter, self).writerow({
-            k: (v.encode('utf-8') if isinstance(v, unicode) else v) for k, v in row.iteritems()
+            k: (v.encode('utf-8') if isinstance(v, unicode) else v) for k, v in row.items()
         })
 
     def writerows(self, rows):
@@ -329,7 +354,7 @@ def process_map(file_in, validate):
 if __name__ == '__main__':
     # Note: Validation is ~ 10X slower. For the project consider using a small
     # sample of the map when validating.
-    process_map(OSM_PATH, validate=True)
+    process_map(OSM_PATH, validate=False)
 
 
 

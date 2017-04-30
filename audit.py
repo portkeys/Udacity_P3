@@ -1,32 +1,58 @@
-"""
-Your task in this exercise has two steps:
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-- audit the OSMFILE and change the variable 'mapping' to reflect the changes needed to fix 
-    the unexpected street types to the appropriate ones in the expected list.
-    You have to add mappings only for the actual problems you find in this OSMFILE,
-    not a generalized solution, since that may and will depend on the particular area you are auditing.
-- write the update_name function, to actually fix the street name.
-    The function takes a string with street name as an argument and should return the fixed name
-    We have provided a simple test so that you see what exactly is expected
+"""
+Task: Audtit 
+- audit_cityname
+- audit_phone
+_ audit_zipcode
+_ audit_street
+
 """
 import xml.etree.cElementTree as ET
 from collections import defaultdict
 import re
 import pprint
 
-OSMFILE = "example.osm"
+OSMFILE = "sample.osm"
+
+# Audit city name
+def audit_cityname(OSMFILE):
+    city = set()
+    for event, elem in ET.iterparse(OSMFILE):
+        if elem.tag == "node" or elem.tag == "way":
+            for tag in elem.iter("tag"):
+                if tag.attrib['k'] == "addr:city" or tag.attrib['k']=="cityname":
+                    city.add(tag.attrib['v'])
+    return(city)
+
+# Audit phone
+def audit_phone(OSMFILE):
+    phone_list = []
+    for event, elem in ET.iterparse(OSMFILE):
+        if elem.tag == "node" or elem.tag == "way":
+            for tag in elem.iter("tag"):
+                if tag.attrib['k'] == "phone":
+                    phone_list.append(tag.attrib['v'])
+                    
+    return(phone_list)
+
+# Audit zipcode
+def audit_zipcode(OSMFILE):
+    post_list = []
+    for event, elem in ET.iterparse(OSMFILE):
+        if elem.tag == "node" or elem.tag == "way":
+            for tag in elem.iter("tag"):
+                if tag.attrib['k'] == "addr:postcode":
+                    post_list.append(tag.attrib['v'])
+    return(post_list)
+
+# Audit Street names ------start----
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
 
-
-expected_eng= ["Street", "Avenue", "Boulevard", "Drive", "Court", "Place", "Square", "Lane", "Road", 
-            "Trail", "Parkway", "Commons", "Path"]
-
-
-# UPDATE THIS VARIABLE
-mapping = { "St.": "Street",
-            "Ave." : "Avenue",
-            "Rd." : "Road"
-            }
+expected= ["Street", "Avenue", "Road", "Boulevard", "Drive", 
+           "Lane", "Path", "Trail", "Parkway",
+           "Central","East", "West", "North", "South"]
 
 def is_street_name(elem):
     return (elem.attrib['k'] == "addr:street")
@@ -37,11 +63,6 @@ def audit_street_type(street_types, street_name):
         street_type = m.group()
         if street_type not in expected:
             street_types[street_type].add(street_name)
-
-
-
-
-
 def audit(osmfile):
     osm_file = open(osmfile, "r")
     street_types = defaultdict(set)
@@ -55,28 +76,14 @@ def audit(osmfile):
     return street_types
 
 
-def update_name(name, mapping):
-    for target in mapping.keys():
-        if target in name:
-            name = name.replace(target, mapping[target])
-
-    return name
+# Audit Street names ------end----
 
 
-def test():
-    st_types = audit(OSMFILE)
-    assert len(st_types) == 3
-    pprint.pprint(dict(st_types))
-
-    for st_type, ways in st_types.iteritems():
-        for name in ways:
-            better_name = update_name(name, mapping)
-            print(name, "=>", better_name)
-            if name == "West Lexington St.":
-                assert better_name == "West Lexington Street"
-            if name == "Baldwin Rd.":
-                assert better_name == "Baldwin Road"
 
 
-if __name__ == '__main__':
-    test()
+
+
+
+
+
+
