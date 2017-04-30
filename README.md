@@ -11,5 +11,9 @@
       - **schema.py**       : define schema for database
       - **csv_to_db.py**    : import csv to database
 3. **sample.osm** : sample osm with size less than 10MB
+4. **other** : refer to the below
+
+
+   ![File_size](File_size.png)
 
 
