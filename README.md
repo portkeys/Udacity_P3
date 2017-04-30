@@ -1,9 +1,15 @@
 # Udacity DataNana P3 
 # Wrangling OpenStreetMap Data with SQL
 
-* **sample.py**       : create a sample osm with size less than 10 MB.
-* **iter_parsing.py** : parse osm file, extract and count top-level element types
-* **tag_types.py**    : check the "k" in each "tag" element, and summarize k attribute written format (i.e. lowercase, problemmatic characters)
-* **audit.py**        : audit and clean
-* **data.py**         : clean and shape data
-* **schema.py**       : define schema for database
+## Submission
+* **report.ipynb : Jupyter Notebook containing data wrangling processes
+* Python code
+     1. **sample.py**: create a sample osm with k=100
+     2. **audit.py**        : audit cityname, phone, zipcode, streetname
+     3. **clean.py**        : update cityname, phone, streetname
+     4. **data.py**         : shape data to csv
+     5. **schema.py**       : define schema for database
+     6. **csv_to_db.py**    : import csv to database
+* sample.osm : sample osm with size less than 10MB
+
+
