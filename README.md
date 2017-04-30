@@ -2,8 +2,8 @@
 # Wrangling OpenStreetMap Data with SQL
 
 ## Submission
-* **report.ipynb : Jupyter Notebook containing data wrangling processes
-* Python code
+* **report.ipynb** : Jupyter Notebook containing data wrangling processes
+* **Python code**
      1. **sample.py**: create a sample osm with k=100
      2. **audit.py**        : audit cityname, phone, zipcode, streetname
      3. **clean.py**        : update cityname, phone, streetname
