@@ -1,4 +1,4 @@
-# Udacity DataNana P3 
+# Udacity DataNano P3 
 # Wrangling OpenStreetMap Data with SQL
 
 ## Submission
